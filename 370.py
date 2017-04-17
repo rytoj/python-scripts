@@ -52,6 +52,7 @@ def get_comments(*boards):
 # TODO: parse 200258išlįsk iš akvariumo, board: b
 # TODO: factor to method
 # TODO: cross platform
+# TODO: dispaly post_id
 base_commits = get_comments("b", "v", "a")
 while True:
 	time.sleep(CHECK_INTERVAL)
