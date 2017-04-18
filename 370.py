@@ -4,6 +4,7 @@ import collections
 import time
 from subprocess import call
 import logging
+import re
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -44,14 +45,16 @@ def get_comments(*boards):
 					LOGGER.debug(author.get_text())
 				for comment in reply.find_all("div", {"class": "body"}):
 					LOGGER.debug(comment.get_text())
+					comment = ' '.join(re.split("(>>\d*)", comment.get_text())[1:])
+
 				postai.append([collections.OrderedDict(
-					{"comment": comment.get_text(), "author": author.get_text(), "reply_id": reply_id})])
+					{"comment": comment, "author": author.get_text(),
+					 "reply_id": reply_id})])
 				temos_ir_postai[board][thread_id] = postai
 			postai = []  # Clear list after putting in dict
 	return temos_ir_postai
 
 
-# TODO: parse 200258išlįsk iš akvariumo, board: b
 # TODO: factor to method
 # TODO: cross platform
 base_commits = get_comments("b", "v", "a")
@@ -71,7 +74,7 @@ while True:
 					reply_id = comments[-1][0]["reply_id"]
 					LOGGER.info(
 						"No now content detected\n No: %s on /%s/\n name: %s \n description: %s" % (
-							reply_id, board_name,  name, description))
+							reply_id, board_name, name, description))
 					call(
 						["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
 					base_commits = get_comments("b", "v", "a")
