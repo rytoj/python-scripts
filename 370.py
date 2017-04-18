@@ -37,13 +37,15 @@ def get_comments(*boards):
 			thread_id = tema.get('id').split("_")[1]
 			LOGGER.debug("Tema: {}".format(thread_id))
 			for reply_index, reply in enumerate(tema.find_all("div", {"class": "post reply"})):
+				reply_id = reply.get('id').split("_")[1]
 				if not temos_ir_postai.get(board):
 					temos_ir_postai[board] = collections.OrderedDict()
 				for author in reply.find_all("span", {"class": "name"}):
 					LOGGER.debug(author.get_text())
 				for comment in reply.find_all("div", {"class": "body"}):
 					LOGGER.debug(comment.get_text())
-				postai.append([collections.OrderedDict({"comment": comment.get_text(), "author": author.get_text()})])
+				postai.append([collections.OrderedDict(
+					{"comment": comment.get_text(), "author": author.get_text(), "reply_id": reply_id})])
 				temos_ir_postai[board][thread_id] = postai
 			postai = []  # Clear list after putting in dict
 	return temos_ir_postai
@@ -52,7 +54,6 @@ def get_comments(*boards):
 # TODO: parse 200258išlįsk iš akvariumo, board: b
 # TODO: factor to method
 # TODO: cross platform
-# TODO: dispaly post_id
 base_commits = get_comments("b", "v", "a")
 while True:
 	time.sleep(CHECK_INTERVAL)
@@ -67,9 +68,10 @@ while True:
 				for board_id_, comments in new_commits[board_name].items():
 					name = comments[-1][0]["author"]
 					description = comments[-1][0]["comment"]
+					reply_id = comments[-1][0]["reply_id"]
 					LOGGER.info(
-						"No now content detected\n name: %s, description:%s, board: %s" % (
-							name, description, board_name))
+						"No now content detected\n No: %s on /%s/\n name: %s \n description: %s" % (
+							reply_id, board_name,  name, description))
 					call(
 						["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
 					base_commits = get_comments("b", "v", "a")
