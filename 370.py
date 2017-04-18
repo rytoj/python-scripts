@@ -27,11 +27,12 @@ def make_soup(url):
 	return soupdata
 
 
-def get_comments(*boards):
+def get_comments(boards):
 	temos_ir_postai = collections.OrderedDict()
 	postai = []
 
 	for board in boards:
+		board = str(board)
 		soup_ = make_soup("http://370chan.lt/" + board)
 
 		for tema in soup_.find_all("div", {"class": "thread"}):
@@ -55,30 +56,33 @@ def get_comments(*boards):
 	return temos_ir_postai
 
 
-# TODO: factor to method
+def check_new_posts(boards_):
+	base_commits = get_comments(boards_)
+	while True:
+		time.sleep(CHECK_INTERVAL)
+		new_commits = get_comments(boards_)
+
+		for boards in base_commits:
+			LOGGER.info("Checking boards: " + boards)
+		if base_commits != new_commits:
+			for board_name, board_id in new_commits.items():
+				if new_commits[board_name] != base_commits[board_name]:
+					# Get latest commit
+					for board_id_, comments in new_commits[board_name].items():
+						name = comments[-1][0]["author"]
+						description = comments[-1][0]["comment"]
+						reply_id = comments[-1][0]["reply_id"]
+						LOGGER.info(
+							"No now content detected\n No: %s on /%s/\n name: %s \n description: %s" % (
+								reply_id, board_name, name, description))
+						call(
+							["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
+						base_commits = get_comments(boards_)
+						break
+
+		else:
+			LOGGER.info("No commit changes detected.")
+
+
 # TODO: cross platform
-base_commits = get_comments("b", "v", "a")
-while True:
-	time.sleep(CHECK_INTERVAL)
-	new_commits = get_comments("b", "v", "a")
-
-	for boards in base_commits:
-		LOGGER.info("Checking boards: " + boards)
-	if base_commits != new_commits:
-		for board_name, board_id in new_commits.items():
-			if new_commits[board_name] != base_commits[board_name]:
-				# Get latest commit
-				for board_id_, comments in new_commits[board_name].items():
-					name = comments[-1][0]["author"]
-					description = comments[-1][0]["comment"]
-					reply_id = comments[-1][0]["reply_id"]
-					LOGGER.info(
-						"No now content detected\n No: %s on /%s/\n name: %s \n description: %s" % (
-							reply_id, board_name, name, description))
-					call(
-						["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
-					base_commits = get_comments("b", "v", "a")
-					break
-
-	else:
-		LOGGER.info("No commit changes detected.")
+check_new_posts(["b", "v", "a"])
