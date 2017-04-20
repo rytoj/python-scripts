@@ -45,8 +45,12 @@ def get_comments(boards):
 				for author in reply.find_all("span", {"class": "name"}):
 					LOGGER.debug(author.get_text())
 				for comment in reply.find_all("div", {"class": "body"}):
-					LOGGER.debug(comment.get_text())
-					comment = ' '.join(re.split("(>>\d*)", comment.get_text())[1:])
+					LOGGER.debug("Before split: %s" % comment.get_text())
+					if len(re.split("(>>\d*)", comment.get_text())) == 1:
+						comment = ' '.join(re.split("(>>\d*)", comment.get_text()))
+					else:
+						comment = ' '.join(re.split("(>>\d*)", comment.get_text())[1:])
+					LOGGER.debug("After split: %s" % comment)
 
 				postai.append([collections.OrderedDict(
 					{"comment": comment, "author": author.get_text(),
