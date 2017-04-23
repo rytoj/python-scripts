@@ -76,8 +76,11 @@ def check_new_posts(boards_):
 		time.sleep(CHECK_INTERVAL)
 		new_commits = get_comments(boards_)
 
-		for boards in base_commits:
-			LOGGER.info("Checking boards: " + boards)
+		for board_name in base_commits:
+			for board_id_, comments in new_commits[board_name].items():
+				reply_id = comments[-1][0]["reply_id"]
+				LOGGER.info("Checking /%s/, newest: No.%s " % (board_name, reply_id))
+				break
 		if base_commits != new_commits:
 			for board_name, board_id in new_commits.items():
 				if new_commits[board_name] != base_commits[board_name]:
