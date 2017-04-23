@@ -38,7 +38,7 @@ def get_comments(boards):
 		for tema in soup_.find_all("div", {"class": "thread"}):
 			thread_id = tema.get('id').split("_")[1]
 			LOGGER.debug("Tema: {}".format(thread_id))
-			for reply_index, reply in enumerate(tema.find_all("div", {"class": "post reply"})):
+			for reply in tema.find_all("div", {"class": "post reply"}):
 				reply_id = reply.get('id').split("_")[1]
 				if not temos_ir_postai.get(board):
 					temos_ir_postai[board] = collections.OrderedDict()
