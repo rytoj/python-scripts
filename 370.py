@@ -20,7 +20,6 @@ if sys.platform[:3] == "win":
 	from win32gui import *
 	import win32con
 	import sys, os
-	import struct
 
 
 	class WindowsBalloonTip:
@@ -54,13 +53,16 @@ if sys.platform[:3] == "win":
 			                 (self.hwnd, 0, NIF_INFO, win32con.WM_USER + 20, \
 			                  hicon, "Balloon  tooltip", msg, 200, title))
 			# self.show_balloon(title, msg)
-			time.sleep(10)
+			time.sleep(5)
 			DestroyWindow(self.hwnd)
 
 		def OnDestroy(self, hwnd, msg, wparam, lparam):
 			nid = (self.hwnd, 0)
 			Shell_NotifyIcon(NIM_DELETE, nid)
 			PostQuitMessage(0)  # Terminate the app.
+
+		def balloon_tip(title, msg):
+			w = WindowsBalloonTip(title, msg)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -194,7 +196,9 @@ def temu_tikrinimas(boards_):
 						description = comments[-1][0]["comment"]
 						reply_id = comments[-1][0]["reply_id"]
 						dubliai = pranesti_apie_dublius(dubliu_tikrinimas(reply_id))
-
+						LOGGER.info(
+							"New content detected\n No: %s %s on /%s/\n name: %s \n description: %s" % (
+								reply_id, dubliai, board_name, name, description))
 						notify(board_name, description, dubliai, name, reply_id)
 						base_commits = get_comments(boards_)
 						break
@@ -205,9 +209,7 @@ def temu_tikrinimas(boards_):
 
 def notify(board_name, description, dubliai, name, reply_id):
 	if sys.platform[:3] == "lin":
-		LOGGER.info(
-			"New content detected\n No: %s %s on /%s/\n name: %s \n description: %s" % (
-				reply_id, dubliai, board_name, name, description))
+
 	if dubliai:
 		call(
 			["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name),
