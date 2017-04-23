@@ -63,8 +63,8 @@ if sys.platform[:3] == "win":
 			Shell_NotifyIcon(NIM_DELETE, nid)
 			PostQuitMessage(0)  # Terminate the app.
 
-		def balloon_tip(title, msg):
-			w = WindowsBalloonTip(title, msg)
+	def balloon_tip(title, msg):
+		w = WindowsBalloonTip(title, msg)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',
