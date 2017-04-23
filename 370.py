@@ -96,7 +96,7 @@ def dubliu_tikrinimas(No):
 def pranesti_apie_dublius(dubliu_skaicius):
     """
 
-    :param dubliu_skaicius: besikartojanciu skaiciu kiekis int
+    :param dubliu_skaicius(int): besikartojanciu skaiciu kiekis
     :return: grazina eilute atitinkacia dubliu skaiciu
     """
     if dubliu_skaicius == 0 or dubliu_skaicius == 1:
@@ -117,7 +117,7 @@ def pranesti_apie_dublius(dubliu_skaicius):
         return "Oktetai"
 
 
-def check_new_posts(boards_):
+def temu_tikrinimas(boards_):
     base_commits = get_comments(boards_)
     while True:
         time.sleep(CHECK_INTERVAL)
@@ -157,4 +157,4 @@ def check_new_posts(boards_):
 
 
 # TODO: cross platform
-check_new_posts(["b", "int", "a", "v"])
+temu_tikrinimas(["b", "int", "a", "v"])
