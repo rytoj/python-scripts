@@ -209,16 +209,20 @@ def temu_tikrinimas(boards_):
 
 def notify(board_name, description, dubliai, name, reply_id):
 	if sys.platform[:3] == "lin":
-
-	if dubliai:
-		call(
-			["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name),
-			 "! {} !\n{}".format(dubliai, description)])
-	else:
-		call(
-			["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
+		if dubliai:
+			call(
+				["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name),
+				 "! {} !\n{}".format(dubliai, description)])
+		else:
+			call(
+				["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
 	if sys.platform[:3] == "win":
 		balloon_tip("{} on /{}/".format(name, board_name), "{}".format(description))
 
 
-temu_tikrinimas(["b", "int", "a", "v"])
+def main():
+	temu_tikrinimas(["b", "int", "a", "v"])
+
+
+if __name__ == '__main__':
+	main()
