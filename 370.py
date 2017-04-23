@@ -12,6 +12,8 @@ import sys
 # Reikalavimai
 # python 3.6
 # pip install BeautifulSoup4
+# Windows naudotojams papildomai reikia
+# pip install pypiwin32
 
 
 if sys.platform[:3] == "win":
