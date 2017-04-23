@@ -45,7 +45,7 @@ def get_comments(boards):
 				if new_thread:
 					# Gets op message, one time in reply integration
 					# TODO: parse op message "<"
-					op_id = reply.previous_sibling.get('id').split("_")[1]
+					op_id = reply.previous_sibling.get('id').split("_")[-1]
 					op_reply = reply.previous_sibling.find("div", {"class": "body"}).get_text()
 					postai.append([collections.OrderedDict(
 						{"comment": op_reply, "author": "OP",
