@@ -89,4 +89,4 @@ def check_new_posts(boards_):
 
 
 # TODO: cross platform
-check_new_posts(["b", "v", "a"])
+check_new_posts(["b", "int", "a", "v"])
