@@ -12,8 +12,9 @@ import sys
 # Reikalavimai
 # python 3.6
 # pip install BeautifulSoup4
-# Windows naudotojams papildomai reikia
+# Windows naudotojams papildomai reikia:
 # pip install pypiwin32
+# testinta su win7
 
 
 if sys.platform[:3] == "win":
@@ -21,7 +22,7 @@ if sys.platform[:3] == "win":
 	from win32api import *
 	from win32gui import *
 	import win32con
-	import sys, os
+	import os
 
 
 	class WindowsBalloonTip:
@@ -55,13 +56,15 @@ if sys.platform[:3] == "win":
 			                 (self.hwnd, 0, NIF_INFO, win32con.WM_USER + 20, \
 			                  hicon, "Balloon  tooltip", msg, 200, title))
 			# self.show_balloon(title, msg)
-			time.sleep(5)
+			time.sleep(10)
 			DestroyWindow(self.hwnd)
+			classAtom = UnregisterClass(classAtom, hinst)
 
 		def OnDestroy(self, hwnd, msg, wparam, lparam):
 			nid = (self.hwnd, 0)
 			Shell_NotifyIcon(NIM_DELETE, nid)
 			PostQuitMessage(0)  # Terminate the app.
+
 
 	def balloon_tip(title, msg):
 		w = WindowsBalloonTip(title, msg)
