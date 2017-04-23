@@ -70,6 +70,48 @@ def get_comments(boards):
 	return temos_ir_postai
 
 
+def dubliu_tikrinimas(No):
+	"""
+
+	:param No: temos arba reply id kaip str
+	:return: dubliu skaicius
+	"""
+	No = No[::-1]
+	count = 0
+	temp_num = ""
+	for index, number in enumerate(No):
+		if index == 0:
+			count = 1
+			temp_num = number
+		else:
+			if temp_num == number:
+				count += 1
+				temp_num = number
+			if temp_num != number:
+				return count
+
+	return count
+
+
+def pranesti_apie_dublius(dubliu_skaicius):
+	if dubliu_skaicius == 0 or dubliu_skaicius == 1:
+		return ""
+	if dubliu_skaicius == 2:
+		return "Dubliai"
+	if dubliu_skaicius == 3:
+		return "Tripliai"
+	if dubliu_skaicius == 4:
+		return "Kvarkai"
+	if dubliu_skaicius == 5:
+		return "Penktetai"
+	if dubliu_skaicius == 6:
+		return "Sextetai"
+	if dubliu_skaicius == 7:
+		return "Septetai"
+	if dubliu_skaicius == 8:
+		return "Oktetai"
+
+
 def check_new_posts(boards_):
 	base_commits = get_comments(boards_)
 	while True:
@@ -79,7 +121,8 @@ def check_new_posts(boards_):
 		for board_name in base_commits:
 			for board_id_, comments in new_commits[board_name].items():
 				reply_id = comments[-1][0]["reply_id"]
-				LOGGER.info("Checking /%s/, newest: No.%s " % (board_name, reply_id))
+				dubliai = pranesti_apie_dublius(dubliu_tikrinimas(reply_id))
+				LOGGER.info("Checking /%s/, newest: No.%s  %s " % (board_name, reply_id, dubliai))
 				break
 		if base_commits != new_commits:
 			for board_name, board_id in new_commits.items():
@@ -89,11 +132,18 @@ def check_new_posts(boards_):
 						name = comments[-1][0]["author"]
 						description = comments[-1][0]["comment"]
 						reply_id = comments[-1][0]["reply_id"]
+						dubliai = pranesti_apie_dublius(dubliu_tikrinimas(reply_id))
+
 						LOGGER.info(
-							"No now content detected\n No: %s on /%s/\n name: %s \n description: %s" % (
-								reply_id, board_name, name, description))
-						call(
-							["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
+							"New content detected\n No: %s %s on /%s/\n name: %s \n description: %s" % (
+								reply_id, dubliai, board_name, name, description))
+						if dubliai:
+							call(
+								["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name),
+								 "! {} !\n{}".format(dubliai, description)])
+						else:
+							call(
+								["/usr/bin/notify-send", "{}, on /{}/".format(name, board_name), description])
 						base_commits = get_comments(boards_)
 						break
 
