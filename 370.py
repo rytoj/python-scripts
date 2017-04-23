@@ -9,6 +9,13 @@ import logging
 import re
 import sys
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%Y-%M-%d %a %H:%M:%S')
+LOGGER = logging.getLogger(__name__)
+
+CHECK_INTERVAL = 10  # seconds
+
 # Reikalavimai
 # python 3.6
 # pip install BeautifulSoup4
@@ -68,13 +75,6 @@ if sys.platform[:3] == "win":
 
 	def balloon_tip(title, msg):
 		w = WindowsBalloonTip(title, msg)
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%M-%d %a %H:%M:%S')
-LOGGER = logging.getLogger(__name__)
-
-CHECK_INTERVAL = 10  # seconds
 
 
 def make_soup(url):
