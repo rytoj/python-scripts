@@ -158,26 +158,9 @@ def dubliu_tikrinimas(No):
 
 def pranesti_apie_dublius(dubliu_skaicius):
 	"""
-
-	:param dubliu_skaicius(int): besikartojanciu skaiciu kiekis
 	:return: grazina eilute atitinkacia dubliu skaiciu
 	"""
-	if dubliu_skaicius == 0 or dubliu_skaicius == 1:
-		return ""
-	if dubliu_skaicius == 2:
-		return "Dubliai"
-	if dubliu_skaicius == 3:
-		return "Tripliai"
-	if dubliu_skaicius == 4:
-		return "Kvarkai"
-	if dubliu_skaicius == 5:
-		return "Penktetai"
-	if dubliu_skaicius == 6:
-		return "Sextetai"
-	if dubliu_skaicius == 7:
-		return "Septetai"
-	if dubliu_skaicius == 8:
-		return "Oktetai"
+	return ["", "", "Dubliai", "Tripliai", "Kvarkai", "Penktetai", "Sextetai", "Septetai", "Oktetai"][dubliu_skaicius]
 
 
 def temu_tikrinimas(boards_):
