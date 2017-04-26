@@ -11,7 +11,7 @@ import sys
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',
-                    datefmt='%Y-%M-%d %a %H:%M:%S')
+                    datefmt='%Y-%m-%d %a %H:%M:%S')
 LOGGER = logging.getLogger(__name__)
 
 CHECK_INTERVAL = 10  # seconds
