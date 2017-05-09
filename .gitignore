@@ -53,3 +53,4 @@ cistemplate
 
 # api.conf file
 api.conf
+geckodriver.log
