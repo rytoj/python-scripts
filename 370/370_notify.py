@@ -8,6 +8,7 @@ from subprocess import call
 import logging
 import re
 import sys
+import synchtube
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -163,7 +164,7 @@ def pranesti_apie_dublius(dubliu_skaicius):
 	return ["", "", "Dubliai", "Tripliai", "Kvarkai", "Penktetai", "Sextetai", "Septetai", "Oktetai"][dubliu_skaicius]
 
 
-def temu_tikrinimas(boards_):
+def temu_tikrinimas(boards_, synhtube=False, firstTime=[]):
 	base_commits = get_comments(boards_)
 	while True:
 		time.sleep(CHECK_INTERVAL)
@@ -187,7 +188,16 @@ def temu_tikrinimas(boards_):
 						LOGGER.info(
 							"New content detected\n No: %s %s on /%s/\n name: %s \n description: %s" % (
 								reply_id, dubliai, board_name, name, description))
-						notify(board_name, description, dubliai, name, reply_id)
+						if not synhtube:
+							notify(board_name, description, dubliai, name, reply_id)
+						else:
+							if firstTime == []:
+								global driver
+								driver = synchtube.initiate()
+								synchtube.login_synchtube(driver, "370bot")
+								time.sleep(5)
+								firstTime.append('Not Empty')
+							norify_synchtube(board_name, description, dubliai, name, reply_id)
 						base_commits = get_comments(boards_)
 						break
 
@@ -195,7 +205,7 @@ def temu_tikrinimas(boards_):
 			LOGGER.info("No changes detected.")
 
 
-def notify(board_name, description, dubliai, name, reply_id):
+def notify(board_name, description, dubliai, name, reply_id, ):
 	if sys.platform[:3] == "lin":
 		if dubliai:
 			call(
@@ -208,8 +218,18 @@ def notify(board_name, description, dubliai, name, reply_id):
 		balloon_tip("{} on /{}/".format(name, board_name), "{}".format(description))
 
 
+def norify_synchtube(board_name, description, dubliai, name, firstTime=[]):
+	try:
+		if dubliai:
+			synchtube.send_to_chat(driver, "{}, on /{}/ \n ! {} !\n{}".format(name, board_name, dubliai, description))
+		else:
+			synchtube.send_to_chat(driver, "{}, on /{}/\n{}".format(name, board_name, description))
+	except synchtube.selenium.common.exceptions.ElementNotInteractableException:
+		time.sleep(60)
+
+
 def main():
-	temu_tikrinimas(["b", "int", "a", "v"])
+	temu_tikrinimas(["b", "int", "a", "v"], synhtube=True)
 
 
 if __name__ == '__main__':
