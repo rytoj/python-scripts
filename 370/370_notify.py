@@ -168,8 +168,12 @@ def temu_tikrinimas(boards_, synhtube=False, firstTime=[]):
 	base_commits = get_comments(boards_)
 	while True:
 		time.sleep(CHECK_INTERVAL)
-		new_commits = get_comments(boards_)
-
+		try:
+			new_commits = get_comments(boards_)
+		except urllib.error.URLError as e:
+			LOGGER.error(e)
+			time.sleep(60)
+			new_commits = get_comments(boards_)
 		for board_name in base_commits:
 			for board_id_, comments in new_commits[board_name].items():
 				reply_id = comments[-1][0]["reply_id"]
