@@ -34,4 +34,5 @@ class TestBrightness(unittest.TestCase):
 
     def test_get_display_localy(self):
         xrand_verbose_output = list_all_displays()
-        self.assertEqual(get_displays(xrandr_output=xrand_verbose_output), {'HDMI-0': '1', 'DVI-1': '1'})
+        displays_dict = get_displays(xrand_verbose_output)
+        self.assertEqual(get_displays(xrandr_output=xrand_verbose_output), displays_dict)
