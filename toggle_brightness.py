@@ -53,8 +53,8 @@ def _run_as_standalone_script():
             turn_on_brightness(passed_argument)
 
 
-    except KeyError:
-        print("Incorrect display name: {}".format(passed_argument))
+    except (KeyError, IndexError):
+        print("Incorrect display name")
         print("Available options: \n{}".format(displays_dict))
 
 
@@ -67,7 +67,7 @@ def get_displays(xrandr_output):
     """
     displays = []
     brightness = []
-    regex = "[A-Z]{3,}-[0-9] connected"
+    regex = "[a-zA-Z]*-\d.* connected"
     brightness_regex = "Brightness: [0-9].[0-9]"
 
     matches = re.finditer(regex, xrandr_output)
