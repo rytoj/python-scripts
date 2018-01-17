@@ -38,26 +38,6 @@ def list_all_displays():
     return subprocess.check_output(command.split()).decode()
 
 
-def _run_as_standalone_script():
-    """Runs program as standalone script."""
-    # return_code = turn_on_brightness("HDMI-0")
-    xrand_verbose_output = list_all_displays()
-    displays_dict = get_displays(xrand_verbose_output)
-    import sys
-    try:
-        passed_argument = sys.argv[1]
-        brightness_value = displays_dict[passed_argument]
-        if brightness_value == "1":
-            turn_off_brightness(passed_argument)
-        if brightness_value == "0":
-            turn_on_brightness(passed_argument)
-
-
-    except (KeyError, IndexError):
-        print("Incorrect display name")
-        print("Available options: \n{}".format(displays_dict))
-
-
 def get_displays(xrandr_output):
     """
     Get list of connected displays
@@ -79,6 +59,27 @@ def get_displays(xrandr_output):
         brightness.append(match.group().split(": ")[1][0])
 
     return dict(zip(displays, brightness))
+
+
+def _run_as_standalone_script():
+    """Runs program as standalone script."""
+    # return_code = turn_on_brightness("HDMI-0")
+    xrand_verbose_output = list_all_displays()
+    displays_dict = get_displays(xrand_verbose_output)
+    import sys
+    try:
+        passed_argument = sys.argv[1]
+        brightness_value = displays_dict[passed_argument]
+        if brightness_value == "1":
+            turn_off_brightness(passed_argument)
+        if brightness_value == "0":
+            turn_on_brightness(passed_argument)
+
+
+    except (KeyError, IndexError):
+        print("Incorrect display name\n")
+        print("Available options: \n{}".format(displays_dict))
+        print("\nUsage:\n{} 'DISPLAY_NAME'".format(sys.argv[0]))
 
 
 if __name__ == '__main__':
